@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-interface StakedPunks {
+interface IStakedPunks {
     /**
      * @dev returns a token ID by `owner` from a given `index` of its token list
      */
