@@ -10,12 +10,13 @@ async function main() {
   );
   const deployedStakedPunksTokenContract =
     await stakedPunksTokenContract.deploy(stakedPunksNFTContract);
+  await deployedStakedPunksTokenContract.deployed();
+  console.log(
+    "Staked Punks Token Contract address: " +
+      deployedStakedPunksTokenContract.address
+  );
 }
-await deployedStakedPunksTokenContract.deployed();
-console.log(
-  "Staked Punks Token Contract address: " +
-    deployedStakedPunksTokenContract.address
-);
+
 //call main function and catch any errors
 main()
   .then(() => process.exit(0))
