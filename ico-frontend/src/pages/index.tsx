@@ -32,4 +32,42 @@ export default function Home() {
   const [isOwner, setIsOwner] = useState(false);
   //create a reference to web3modal which will be used to connect Metamask
   const web3ModalRef = useRef();
+
+  const getTokensToBeClaimed = async () =>{
+    try{
+      const provider =  await getProviderOrSigner();
+      //create instance of NFT Contract
+      const nftContract = new Contract(
+        NFT_CONTRACT_ADDRESS,
+        NFT_CONTRACT_ABI, 
+        provider
+      );
+      const tokenContract = new Contract(
+        TOKEN_CONTRACT_ADDRESS,
+        TOKEN_CONTRACT_ABI,
+        provider
+        );
+        //get signer from wallet connect to metamastk
+        const signer = getProviderOrSigner(true);
+        //grab signer's address
+        const address = signer.getAddress();
+        //get signer's balance(number of NFTs held by user)
+        const balance = nftContract.balanceOf(address);
+
+        if (balance === zero){
+          setTokensToBeClaimed(zero);
+        }else{
+          var amount = 0;
+          // for all NFTs held by user, check if the tokens have already been claimed
+          // only increase amount if tokens have not been claimed for an NFT(for a given tokenId)
+          for(let i = 0; i < balance; i++){
+            const tokenId = await nftContract.tokenOfOwnerByIndex(address, i);
+            const claimed = await tokenContract.tokenIdsClaimed(tokenId)
+            if(!claimed){
+              amount++;
+            }
+          }
+        }
+    }
+  }
 }
