@@ -83,6 +83,24 @@ export default function Home() {
    */
   const getBalanceOfStakedPunksTokens = async () => {
     try {
-    } catch (error) {}
+      const provider = getProviderOrSigner();
+
+      const tokenContract = new Contract(
+        TOKEN_CONTRACT_ADDRESS,
+        TOKEN_CONTRACT_ABI,
+        provider
+      );
+
+      const signer = getProviderOrSigner(true);
+
+      const address = signer.getAddress();
+
+      const balance = await tokenContract.balanceOf(address);
+      //set balance
+      SetBalanceOfCryptoDevTokens(balance);
+    } catch (err) {
+      console.error(err);
+      SetBalanceOfCryptoDevTokens(zero);
+    }
   };
 }
