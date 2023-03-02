@@ -9,6 +9,7 @@ import {
   TOKEN_CONTRACT_ADDRESS,
 } from "../constants";
 import styles from "../styles/Home.module.css";
+//Types
 
 export default function Home() {
   //create a bignumber 0
@@ -33,41 +34,55 @@ export default function Home() {
   //create a reference to web3modal which will be used to connect Metamask
   const web3ModalRef = useRef();
 
-  const getTokensToBeClaimed = async () =>{
-    try{
-      const provider =  await getProviderOrSigner();
+  /**
+   * getTokensToBeClaimed: get the number of tokens that can be claimed by the user
+   */
+  const getTokensToBeClaimed = async () => {
+    try {
+      const provider = await getProviderOrSigner();
       //create instance of NFT Contract
       const nftContract = new Contract(
         NFT_CONTRACT_ADDRESS,
-        NFT_CONTRACT_ABI, 
+        NFT_CONTRACT_ABI,
         provider
       );
-      const tokenContract = new Contract(
+      const tokenContract: Contract = new Contract(
         TOKEN_CONTRACT_ADDRESS,
         TOKEN_CONTRACT_ABI,
         provider
-        );
-        //get signer from wallet connect to metamastk
-        const signer = getProviderOrSigner(true);
-        //grab signer's address
-        const address = signer.getAddress();
-        //get signer's balance(number of NFTs held by user)
-        const balance = nftContract.balanceOf(address);
+      );
+      //get signer from wallet connect to metamastk
+      const signer = getProviderOrSigner(true);
+      //grab signer's address
+      const address: string = signer.getAddress();
+      //get signer's balance(number of NFTs held by user)
+      const balance = nftContract.balanceOf(address);
 
-        if (balance === zero){
-          setTokensToBeClaimed(zero);
-        }else{
-          var amount = 0;
-          // for all NFTs held by user, check if the tokens have already been claimed
-          // only increase amount if tokens have not been claimed for an NFT(for a given tokenId)
-          for(let i = 0; i < balance; i++){
-            const tokenId = await nftContract.tokenOfOwnerByIndex(address, i);
-            const claimed = await tokenContract.tokenIdsClaimed(tokenId)
-            if(!claimed){
-              amount++;
-            }
+      if (balance === zero) {
+        setTokensToBeClaimed(zero);
+      } else {
+        let amount: number = 0;
+        // for all NFTs held by user, check if the tokens have already been claimed
+        // only increase amount if tokens have not been claimed for an NFT(for a given tokenId)
+        for (let i = 0; i < balance; i++) {
+          const tokenId = await nftContract.tokenOfOwnerByIndex(address, i);
+          const claimed = await tokenContract.tokenIdsClaimed(tokenId);
+          if (!claimed) {
+            amount++;
           }
         }
+        setTokensToBeClaimed(BigNumber.from(amount));
+      }
+    } catch (err) {
+      console.error(err);
+      setTokensToBeClaimed(zero);
     }
-  }
+  };
+  /**
+   * getBalanceOfStakedPunksTokens: check the balance of STPTokens held by an address
+   */
+  const getBalanceOfStakedPunksTokens = async () => {
+    try {
+    } catch (error) {}
+  };
 }
