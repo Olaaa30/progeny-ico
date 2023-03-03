@@ -103,4 +103,31 @@ export default function Home() {
       SetBalanceOfCryptoDevTokens(zero);
     }
   };
+  /**
+   * mintCryptoDevToken: mints `amount` number of tokens to a given address
+   */
+  const mintCryptoDevToken = async (amount) => {
+    try {
+      const signer = await getProviderOrSigner(true);
+
+      const tokenContract = new Contract(
+        TOKEN_CONTRACT_ADDRESS,
+        TOKEN_CONTRACT_ABI,
+        signer
+      );
+      const value = 0.001 * amount;
+      const tx = await tokenContract.mint(amount, {
+        value: utils.parseEther(value.toString()),
+      });
+      setLoading(true);
+      await tx.wait();
+      setLoading(false);
+      window.alert("Successfully minted Crypto Dev Tokens");
+      await getBalanceOfStakedPunksTokens();
+      await getTokensToBeClaimed();
+      await getTotalTokensMinted();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 }
