@@ -39,7 +39,7 @@ export default function Home() {
    */
   const getTokensToBeClaimed = async () => {
     try {
-      const provider = await getProviderOrSigner();
+      const provider = await await getProviderOrSigner();
       //create instance of NFT Contract
       const nftContract = new Contract(
         NFT_CONTRACT_ADDRESS,
@@ -52,7 +52,7 @@ export default function Home() {
         provider
       );
       //get signer from wallet connect to metamastk
-      const signer = getProviderOrSigner(true);
+      const signer = await getProviderOrSigner(true);
       //grab signer's address
       const address: string = signer.getAddress();
       //get signer's balance(number of NFTs held by user)
@@ -83,7 +83,7 @@ export default function Home() {
    */
   const getBalanceOfStakedPunksTokens = async () => {
     try {
-      const provider = getProviderOrSigner();
+      const provider = await getProviderOrSigner();
 
       const tokenContract = new Contract(
         TOKEN_CONTRACT_ADDRESS,
@@ -91,7 +91,7 @@ export default function Home() {
         provider
       );
 
-      const signer = getProviderOrSigner(true);
+      const signer = await getProviderOrSigner(true);
 
       const address = signer.getAddress();
 
@@ -108,7 +108,7 @@ export default function Home() {
    */
   const mintCryptoDevToken = async (amount) => {
     try {
-      const signer = await getProviderOrSigner(true);
+      const signer = await await getProviderOrSigner(true);
 
       const tokenContract = new Contract(
         TOKEN_CONTRACT_ADDRESS,
@@ -136,7 +136,7 @@ export default function Home() {
 
   const claimTokensToBeClaimed = async () => {
     try {
-      const signer = getProviderOrSigner(true);
+      const signer = await getProviderOrSigner(true);
 
       const tokenContract = new Contract(
         TOKEN_CONTRACT_ADDRESS,
@@ -163,7 +163,7 @@ export default function Home() {
 
   const getTotalTokensMinted = async () => {
     try {
-      const provider = getProviderOrSigner();
+      const provider = await getProviderOrSigner();
 
       const tokenContract = new Contract(
         TOKEN_CONTRACT_ADDRESS,
@@ -173,6 +173,32 @@ export default function Home() {
 
       const _totalSupply = tokenContract.maxSupply();
       setTokensMinted(_totalSupply);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  /**
+   * getOwner: gets the owner of the contract by connected address
+   */
+
+  const getOwner = async () => {
+    try {
+      const provider = await getProviderOrSigner();
+
+      const tokenContract = new Contract(
+        TOKEN_CONTRACT_ADDRESS,
+        TOKEN_CONTRACT_ABI,
+        provider
+      );
+      const _owner = await tokenContract.owner();
+
+      const signer = await getProviderOrSigner(true);
+
+      const address = signer.getAddress();
+      if (_owner.toLowerCase() === address.toLowerCase()) {
+        setIsOwner(true);
+      }
     } catch (error) {
       console.error(error);
     }
