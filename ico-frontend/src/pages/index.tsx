@@ -203,4 +203,28 @@ export default function Home() {
       console.error(error);
     }
   };
+
+  /**
+   * withdrawEth: withdraw eth in the contract
+   */
+
+  const withdrawEth = async () => {
+    try {
+      const signer = await getProviderOrSigner(true);
+
+      const tokenContract = new Contract(
+        TOKEN_CONTRACT_ADDRESS,
+        TOKEN_CONTRACT_ABI,
+        signer
+      );
+      const tx = await tokenContract.withdraw();
+      setLoading(true);
+      await tx.wait();
+      setLoading(false);
+      await getOwner();
+    } catch (err) {
+      console.error(err);
+      window.alert(err.reason);
+    }
+  };
 }
