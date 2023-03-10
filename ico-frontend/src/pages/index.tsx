@@ -133,4 +133,48 @@ export default function Home() {
   /**
    * claimTokensToBeClaimed: helps the user to claim their tokens
    */
+
+  const claimTokensToBeClaimed = async () => {
+    try {
+      const signer = getProviderOrSigner(true);
+
+      const tokenContract = new Contract(
+        TOKEN_CONTRACT_ADDRESS,
+        TOKEN_CONTRACT_ABI,
+        signer
+      );
+      const tx = await tokenContract.claim();
+      setLoading(true);
+      await tx.wait();
+      setLoading(false);
+
+      window.alert("Successfuly claimed tokens");
+      await getBalanceOfStakedPunksTokens();
+      await getTotalTokensMinted();
+      await getTokensToBeClaimed();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  /**
+   * getTotalTokensMinted - gets the total amount of tokens that have been minteds
+   */
+
+  const getTotalTokensMinted = async () => {
+    try {
+      const provider = getProviderOrSigner();
+
+      const tokenContract = new Contract(
+        TOKEN_CONTRACT_ADDRESS,
+        TOKEN_CONTRACT_ABI,
+        provider
+      );
+
+      const _totalSupply = tokenContract.maxSupply();
+      setTokensMinted(_totalSupply);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 }
