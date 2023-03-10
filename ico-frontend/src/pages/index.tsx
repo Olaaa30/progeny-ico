@@ -130,4 +130,7 @@ export default function Home() {
       console.error(err);
     }
   };
+  /**
+   * claimTokensToBeClaimed: helps the user to claim their tokens
+   */
 }
