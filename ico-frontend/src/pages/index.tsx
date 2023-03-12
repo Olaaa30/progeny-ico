@@ -1,4 +1,5 @@
 import { BigNumber, Contract, providers, utils } from "ethers";
+import { connect } from "http2";
 import Head from "next/head";
 import React, { useEffect, useRef, useState } from "react";
 import Web3Modal from "web3modal";
@@ -249,6 +250,32 @@ export default function Home() {
         return signer;
       }
       return web3Provider;
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
+  const connectWallet = async () => {
+    try {
+      await getProviderOrSigner();
+      setWalletConnected(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    //if wallet is not connected, create a new instance of web3modal and connect it to metamask
+    if (!walletConnected) {
+      web3ModalRef.current = new Web3Modal({
+        network: "goerli",
+        providerOptions: {},
+        disableInjectedProvider: false,
+      });
+      connectWallet();
+      getTotalTokensMinted();
+      getBalanceOfStakedPunksTokens();
+      getTokensToBeClaimed();
+      getOwner();
+    }
+  }, [walletConnected]);
 }
