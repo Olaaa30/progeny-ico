@@ -132,10 +132,10 @@ export default function Home() {
     }
   };
   /**
-   * claimTokensToBeClaimed: helps the user to claim their tokens
+   * claimStakedPunkTokens: helps the user to claim their tokens
    */
 
-  const claimTokensToBeClaimed = async () => {
+  const claimStakedPunkTokens = async () => {
     try {
       const signer = await getProviderOrSigner(true);
 
@@ -278,4 +278,26 @@ export default function Home() {
       getOwner();
     }
   }, [walletConnected]);
+
+  const renderButton = () => {
+    if (loading) {
+      return (
+        <div className={styles.description}>
+          <button className={styles.button}>Loading...</button>
+        </div>
+      );
+      if (tokensToBeClaimed > zero) {
+        return (
+          <div>
+            <div className={styles.description}>
+              {tokensToBeClaimed * 10} Tokens can be claimed!
+            </div>
+            <button className={styles.button} onClick={claimStakedPunkTokens}>
+              Claim Tokens
+            </button>
+          </div>
+        );
+      }
+    }
+  };
 }
