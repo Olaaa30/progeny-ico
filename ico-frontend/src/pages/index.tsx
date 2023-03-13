@@ -8,7 +8,7 @@ import {
   NFT_CONTRACT_ADDRESS,
   TOKEN_CONTRACT_ABI,
   TOKEN_CONTRACT_ADDRESS,
-} from "../constants";
+} from "../../constants";
 import styles from "../styles/Home.module.css";
 //Types
 
@@ -40,7 +40,7 @@ export default function Home() {
    */
   const getTokensToBeClaimed = async () => {
     try {
-      const provider = await await getProviderOrSigner();
+      const provider = await getProviderOrSigner(false);
       //create instance of NFT Contract
       const nftContract = new Contract(
         NFT_CONTRACT_ADDRESS,
@@ -109,7 +109,7 @@ export default function Home() {
    */
   const mintCryptoDevToken = async (amount) => {
     try {
-      const signer = await await getProviderOrSigner(true);
+      const signer = await getProviderOrSigner(true);
 
       const tokenContract = new Contract(
         TOKEN_CONTRACT_ADDRESS,
@@ -233,10 +233,8 @@ export default function Home() {
    * getProviderOrSigner: gets the provider or signer depending on the parameter that's passed to it
    *
    */
-  const getProviderOrSigner = async (needSigner: boolean) => {
+  const getProviderOrSigner = async (needSigner = false) => {
     try {
-      needSigner = false;
-
       const provider = await web3ModalRef.current.connect();
       const web3Provider = new providers.Web3Provider(provider);
 
