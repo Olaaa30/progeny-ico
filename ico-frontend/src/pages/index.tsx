@@ -22,8 +22,8 @@ export default function Home() {
   // tokensToBeClaimed is used to keep track of the tokens that can be claimed
   // based on the StakedPunk NFTs held by the user for which they haven't claimed the tokens
   const [tokensToBeClaimed, setTokensToBeClaimed] = useState(zero);
-  // balanceOfCryptoDevTokens keeps track of the number of tokens held by a user
-  const [balanceOfCryptoDevTokens, SetBalanceOfCryptoDevTokens] =
+  // balanceOfStakedPunkTokens keeps track of the number of tokens held by a user
+  const [balanceOfStakedPunkTokens, SetbalanceOfStakedPunkTokens] =
     useState(zero);
   //amount of tokens that user wants to mint
   const [tokenAmount, setTokenAmount] = useState(zero);
@@ -98,10 +98,10 @@ export default function Home() {
 
       const balance = await tokenContract.balanceOf(address);
       //set balance
-      SetBalanceOfCryptoDevTokens(balance);
+      SetbalanceOfStakedPunkTokens(balance);
     } catch (err) {
       console.error(err);
-      SetBalanceOfCryptoDevTokens(zero);
+      SetbalanceOfStakedPunkTokens(zero);
     }
   };
   /**
@@ -290,7 +290,7 @@ export default function Home() {
         return (
           <div>
             <div className={styles.description}>
-              {tokensToBeClaimed * 10} Tokens can be claimed!
+              {tokensToBeClaimed.mul(10)} Tokens can be claimed!
             </div>
             <button className={styles.button} onClick={claimStakedPunkTokens}>
               Claim Tokens
@@ -298,6 +298,78 @@ export default function Home() {
           </div>
         );
       }
+      //if user doesn't have any tokens to claim, prompt them to mint
+      return (
+        <div style={{ display: "flex-col" }}>
+          <div>
+            <input
+              type="number"
+              placeholder="Number of tokens"
+              onChange={(e) => {
+                setTokenAmount(BigNumber.from(e.target.value));
+              }}
+              className={styles.input}
+            />
+          </div>
+          <button
+            className={styles.button}
+            disabled={!tokenAmount.gt(10)}
+            onClick={() => mintCryptoDevToken(tokenAmount)}
+          >
+            Mint Tokens
+          </button>
+        </div>
+      );
     }
   };
+  return (
+    <div>
+      <Head>
+        <title>Staked Punks</title>
+        <meta name="description" content="ICO-Dapp" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <div className={styles.main}>
+        <div>
+          <h1 className={styles.title}>Welcome to Staked Punks ICO</h1>
+          <div className={styles.description}>
+            You can mint or claim STPs here
+          </div>
+          {walletConnected ? (
+            <div>
+              <div className={styles.description}>
+                You have minted {utils.formatEther(balanceOfStakedPunkTokens)}{" "}
+                Crypto Dev Tokens
+              </div>
+              <div className={styles.description}>
+                Overall {utils.formatEther(tokensMinted)}/10000 have been
+                minted!!!
+              </div>
+              {renderButton()}
+              {isOwner ? (
+                <div>
+                  {loading ? (
+                    <button className={styles.button}>Loading...</button>
+                  ) : (
+                    <button className={styles.button} onClick={withdrawEth}>
+                      Withdraw Coins
+                    </button>
+                  )}
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
+          ) : (
+            <button onClick={connectWallet} className={styles.button}>
+              Connect your wallet
+            </button>
+          )}
+        </div>
+        <div>
+          <img className={styles.image} src="./0.svg" />
+        </div>
+      </div>
+    </div>
+  );
 }
